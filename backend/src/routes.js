@@ -3,7 +3,7 @@ const multer = require('multer')
 const multerConfig = require('./config/multer')
 
 routes.post('/posts', multer(multerConfig).single('file'), (req, res) => {
-  return res.json({"msg": "aoba"})
+  return res.json({"msg": "Image uploaded"})
 })
 
 module.exports = routes;
