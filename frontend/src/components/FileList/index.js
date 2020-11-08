@@ -39,7 +39,7 @@ export default ({ files, onDelete }) => {
               file.url &&
               (
                 <a
-                  href="http://localhost:3000/files/27ffe860567639f9674df407cf071294-profile.jpg"
+                  href={file.url}
                   target="_blank"
                   rel="noopener noreferrer">
                   <MdLink style={{ marginRight: 8 }} size={24} color='#222' />
