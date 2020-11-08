@@ -1,27 +1,22 @@
-import React, { useEffect, useState } from 'react'
-import GlobalStyle from './styles/global'
-import { Container, Content } from './style'
-import { uniqueId } from 'lodash'
-import filesize from 'filesize'
+import React, { Component } from "react";
+import { uniqueId } from "lodash";
+import filesize from "filesize";
 
-import Upload from './components/Upload'
-import FileList from './components/FileList'
-import api from './services/api'
+import api from "./services/api";
 
-function App() {
-  const [uploadedFiles, setUploadedFiles] = useState([])
-  const [filesToUpload, setFsileToUpload] = useState([])
+import GlobalStyle from "./styles/global";
+import { Container, Content } from "./styles";
 
-  useEffect(() => {
-    filesToUpload.forEach(processUpload)
-  }, [filesToUpload])
+import Upload from "./components/Upload";
+import FileList from "./components/FileList";
 
-  useEffect(() => {
-    console.log(uploadedFiles)
-  }, [uploadedFiles])
+class App extends Component {
+  state = {
+    uploadedFiles: []
+  };
 
-  const handleUpload = files => {
-    const upFiles = files.map(file => ({
+  handleUpload = files => {
+    const uploadedFiles = files.map(file => ({
       file,
       id: uniqueId(),
       name: file.name,
@@ -31,64 +26,77 @@ function App() {
       uploaded: false,
       error: false,
       url: null
-    }))
+    }));
 
-    setFsileToUpload(filesToUpload.concat(upFiles))
-  }
+    this.setState({
+      uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles)
+    });
 
-  const updateFile = (id, data) => {
-    setUploadedFiles(
-      filesToUpload.map(fileToUpload => {
-        return id === fileToUpload.id
-          ? { ...fileToUpload, ...data }
-          : fileToUpload
+    uploadedFiles.forEach(this.processUpload);
+  };
+
+  updateFile = (id, data) => {
+    this.setState({
+      uploadedFiles: this.state.uploadedFiles.map(uploadedFile => {
+        return id === uploadedFile.id
+          ? { ...uploadedFile, ...data }
+          : uploadedFile;
       })
-    )
-  }
+    });
+  };
 
-  const processUpload = file => {
-    if (uploadedFiles.filter(f => f.id === file.id).length > 0) return
+  processUpload = uploadedFile => {
+    const data = new FormData();
 
-    const data = new FormData()
+    data.append("file", uploadedFile.file, uploadedFile.name);
 
-    data.append('file', file.file, file.name)
+    api
+      .post("posts", data, {
+        onUploadProgress: e => {
+          const progress = parseInt(Math.round((e.loaded * 100) / e.total));
 
-    api.post('/posts', data, {
-      onUploadProgress: e => {
-        const progress = parseInt(Math.round(e.loaded * 100 / e.total))
-
-        updateFile(file.id, { progress })
-      }
-    })
+          this.updateFile(uploadedFile.id, {
+            progress
+          });
+        }
+      })
       .then(response => {
-        updateFile(file.id, {
+        this.updateFile(uploadedFile.id, {
           uploaded: true,
           id: response.data._id,
-          url: response.data.url,
-          progress: 100
-        })
+          url: response.data.url
+        });
       })
       .catch(() => {
-        updateFile(file.id, {
+        this.updateFile(uploadedFile.id, {
           error: true
-        })
-      })
-  }
+        });
+      });
+  };
 
-  return (
-    <>
+  handleDelete = async id => {
+    await api.delete(`posts/${id}`);
+
+    this.setState({
+      uploadedFiles: this.state.uploadedFiles.filter(file => file.id !== id)
+    });
+  };
+
+  render() {
+    const { uploadedFiles } = this.state;
+
+    return (
       <Container>
         <Content>
-          <Upload onUpload={handleUpload} />
-          {
-            !!uploadedFiles.length &&
-            <FileList files={uploadedFiles} />
-          }
+          <Upload onUpload={this.handleUpload} />
+          {!!uploadedFiles.length && (
+            <FileList files={uploadedFiles} onDelete={this.handleDelete} />
+          )}
         </Content>
+        <GlobalStyle />
       </Container>
-      <GlobalStyle />
-    </>
-  );
+    );
+  }
 }
 
 export default App;

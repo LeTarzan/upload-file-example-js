@@ -5,7 +5,7 @@ import { MdCheckCircle, MdError, MdLink } from 'react-icons/md'
 
 import { Container, FileInfo, Preview } from './styles'
 
-export default ({ files }) => {
+export default ({ files, onDelete }) => {
   return (
     <Container>
       {files.map(file => (
@@ -16,7 +16,7 @@ export default ({ files }) => {
               <strong>{file.name}</strong>
               <span>
                 {file.readableSize}
-                {!!file.url && <button>Excluir</button>}
+                {!!file.url && <button onClick={() => onDelete(file.id)}>Excluir</button>}
                 </span>
             </div>
           </FileInfo>
