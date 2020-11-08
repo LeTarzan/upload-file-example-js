@@ -28,3 +28,5 @@ Funcionalidades:
 * Adicionar arquivo;
 * Excluir arquivo;
 * Link do arquivo;
+
+<img src="https://github.com/LeTarzan/upload-file-example-js/blob/master/example-upload.PNG" width="1000" height="400" />
