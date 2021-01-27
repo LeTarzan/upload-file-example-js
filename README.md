@@ -1,12 +1,13 @@
-# Upload de arquivos local com integração ao S3
+# Upload files to AWS S3
 
-Aplicativo de upload de arquivos desenvolvido com NodeJS e ReactJS.
 
-# Configurações iniciais
+Upload file app developed with NodeJS and ReactJS
+
+# Initial configurations
 
 ### Frontend
 
-Acessar a pasta **Frontend** executar:
+Access directory **Frontend** and run:
 
 ```console
 foo@bar:~$ npm install
@@ -15,18 +16,18 @@ foo@bar:~$ npm start
 
 ### Backend
 
-Na raiz da pasta **Backend** criar o **.env** com base no **.env_example**, logo após executar:
+In **Backend** directory create **.env** based on **.env_example** after run:
 
 ```console
 foo@bar:~$ npm install
 foo@bar:~$ npm run dev
 ```
 
-Funcionalidades:
+Features:
 
-* Listar todos arquivos salvos;
-* Adicionar arquivo;
-* Excluir arquivo;
-* Link do arquivo;
+* List all save files;
+* Add files;
+* Delete files;
+* File link;
 
 <img src="https://github.com/LeTarzan/upload-file-example-js/blob/master/example-upload.PNG" width="1000" height="400" />
